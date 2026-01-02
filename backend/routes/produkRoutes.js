@@ -5,7 +5,7 @@ const produkController = require('../controllers/produkController');
 // Rute GET - ambil semua produk
 router.get('/', produkController.getAllProduk);
 
-// 🟢 Rute GET - ambil produk berdasarkan ID
+// Rute GET - ambil produk berdasarkan ID
 router.get('/:id', produkController.getProdukById);
 
 // Rute POST - tambah produk baru

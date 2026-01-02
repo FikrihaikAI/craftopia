@@ -6,85 +6,108 @@ export default function AdminLogin() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-    const res = await fetch("http://localhost:5000/api/admin/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    });
-  
-    const data = await res.json();
-  
-    if (res.ok) {
+    setLoading(true);
+
+    try {
+      const res = await fetch("http://localhost:5000/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message);
+        return;
+      }
+
       localStorage.setItem("isAdminLoggedIn", "true");
+      localStorage.setItem("adminId", data.adminId);
+
       router.push("/admin/dashboard");
-    } else {
-      alert(data.message);
+    } catch {
+      alert("Server tidak dapat dihubungi");
+    } finally {
+      setLoading(false);
     }
   };
-  
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#243B55] to-[#141E30]">
-      <div className="bg-white w-full max-w-md rounded-2xl shadow-xl px-10 py-12">
-        <h1 className="text-3xl font-semibold text-gray-900 text-center mb-2">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#243B55] to-[#3D5C8A] px-4">
+      <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl px-10 py-12">
+
+        {/* LOGO */}
+        <div className="flex justify-center mb-6">
+          <img
+            src="/Craftopia logo 2B.png"
+            alt="Craftopia"
+            className="w-20 h-20 object-contain"
+          />
+        </div>
+
+        <h1 className="text-3xl font-bold text-gray-800 text-center mb-1">
           Admin Login
         </h1>
         <p className="text-sm text-gray-500 text-center mb-10">
           Craftopia Management System
         </p>
 
-        <form onSubmit={handleLogin} className="space-y-7">
+        <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Username
             </label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Masukkan username"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg
-              focus:outline-none focus:border-[#243B55] transition"
+              required
+              className="w-full px-4 py-3 rounded-xl border border-gray-300
+              focus:outline-none focus:ring-2 focus:ring-[#3D5C8A]/40"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Password
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Masukkan password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg
-              focus:outline-none focus:border-[#243B55] transition"
+              required
+              className="w-full px-4 py-3 rounded-xl border border-gray-300
+              focus:outline-none focus:ring-2 focus:ring-[#3D5C8A]/40"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-[#243B55] text-white py-3 rounded-lg
-            font-medium hover:bg-[#1c2f45] transition"
+            disabled={loading}
+            className="w-full bg-[#3D5C8A] text-white py-3 rounded-xl
+            font-semibold hover:bg-[#2c4973] transition disabled:opacity-60"
           >
-            Login
-          </button>
-
-          <button
-            type="button"
-            onClick={() => router.push("/")}
-            className="w-full py-3 rounded-lg border border-gray-300
-            text-gray-700 hover:bg-gray-50 transition font-medium"
-          >
-            Kembali ke Beranda
+            {loading ? "Memproses..." : "Login"}
           </button>
         </form>
+
+        {/* BACK BUTTON */}
+        <button
+          onClick={() => router.push("/")}
+          className="w-full mt-6 py-3 rounded-xl border border-gray-300
+          text-gray-600 hover:bg-gray-50 transition font-medium"
+        >
+          Kembali ke Beranda
+        </button>
+
+        <p className="text-xs text-gray-400 text-center mt-8">
+          © {new Date().getFullYear()} Craftopia
+        </p>
       </div>
     </div>
   );
