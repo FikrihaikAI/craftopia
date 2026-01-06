@@ -10,7 +10,7 @@ exports.getProdukById = (id, callback) => {
   db.query(
     'SELECT * FROM produk WHERE id = ?',
     [id],
-    callback // ⬅️ KIRIM ARRAY, JANGAN DIOLAH DI MODEL
+    callback
   );
 };
 
