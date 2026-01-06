@@ -4,6 +4,7 @@ const produkModel = require("../models/produkModel");
 exports.getAllProduk = (req, res) => {
   produkModel.getAllProduk((err, result) => {
     if (err) {
+      console.error(' ERROR GET PRODUK:', err);
       return res.status(500).json({ message: "Server error" });
     }
     res.json(result);
@@ -24,7 +25,6 @@ exports.getProdukById = (req, res) => {
       return res.status(404).json({ message: "Produk tidak ditemukan" });
     }
 
-    // ⬅️ INI KUNCI UTAMA
     res.json(results[0]);
   });
 };

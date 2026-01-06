@@ -16,7 +16,7 @@ router.post("/login", (req, res) => {
 
     res.json({
       message: "Login berhasil",
-      adminId: result[0].id, // ⬅️ WAJIB
+      adminId: result[0].id, 
     });
   });
 });
