@@ -1,11 +1,6 @@
 # ===== dependencies =====
 node_modules
 
-# ===== env (DO NOT COMMIT) =====
-.env
-.env.local
-.env.*
-
 # ===== frontend (Next.js) =====
 frontend/.next
 frontend/out

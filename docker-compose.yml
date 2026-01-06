@@ -8,8 +8,6 @@ services:
       MYSQL_DATABASE: craftopia_db
       MYSQL_USER: craftopia
       MYSQL_PASSWORD: craftopia123
-    ports:
-      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
@@ -20,8 +18,13 @@ services:
       - "5000:5000"
     depends_on:
       - mysql
-    env_file:
-      - ./backend/.env
+    environment:
+      PORT: 5000
+      DB_HOST: mysql
+      DB_USER: craftopia
+      DB_PASSWORD: craftopia123
+      DB_NAME: craftopia_db
+      DB_PORT: 3306
 
   frontend:
     build: ./frontend
