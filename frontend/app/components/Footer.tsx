@@ -19,8 +19,8 @@ export default function Footer() {
         <div>
           <div className="flex justify-center md:justify-start items-center gap-3 mb-4">
             <img
-              src="/Craftopia logo 2B.png"
-              alt="Craftopia Logo"
+              src="/BAGgedebug logo.png"
+              alt="BAGgedebug logo"
               className="w-10 h-10 rounded-full border border-white/40"
             />
             <h2 className="text-2xl font-extrabold tracking-wide">

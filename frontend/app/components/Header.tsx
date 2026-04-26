@@ -57,8 +57,8 @@ export default function Header() {
       {/* LOGO */}
       <div className="flex items-center gap-3 group">
         <img
-          src="/Craftopia logo 2B.png"
-          alt="Craftopia Logo"
+          src="/BAGgedebug logo.png"
+          alt="BAGgedebug logo"
           className="w-10 h-10 rounded-full border border-white/40 transition group-hover:scale-105"
         />
         <h1 className="text-xl md:text-2xl font-extrabold tracking-wide">

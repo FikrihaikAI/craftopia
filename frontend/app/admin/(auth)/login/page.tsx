@@ -44,8 +44,8 @@ export default function AdminLogin() {
         {/* LOGO */}
         <div className="flex justify-center mb-6">
           <img
-            src="/Craftopia logo 2B.png"
-            alt="Craftopia"
+            src="/BAGgedebug logo.png"
+            alt="BAGgedebug logo"
             className="w-20 h-20 object-contain"
           />
         </div>

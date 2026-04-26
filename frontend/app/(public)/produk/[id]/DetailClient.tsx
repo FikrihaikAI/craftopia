@@ -57,7 +57,7 @@ export default function DetailProduk({ id }: { id: string }) {
   return (
     <div className="bg-gray-50 min-h-screen text-gray-900">
 
-      {/* ================= BREADCRUMB ================= */}
+      {/* ================= JALUR NAV ================= */}
       <div className="pt-24 px-6 md:px-20 text-sm text-gray-500">
         <button
           onClick={() => router.push("/produk")}
