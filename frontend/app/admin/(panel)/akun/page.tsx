@@ -14,11 +14,6 @@ export default function AkunPage() {
     konfirmasi: "",
   });
 
-  useEffect(() => {
-    const loggedIn = localStorage.getItem("isAdminLoggedIn");
-    if (!loggedIn) router.push("/admin/login");
-  }, [router]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -44,8 +39,7 @@ export default function AkunPage() {
       });
 
       alert("Akun berhasil diperbarui, silakan login ulang");
-
-      localStorage.removeItem("isAdminLoggedIn");
+      
       localStorage.removeItem("adminId");
 
       router.push("/admin/login");
@@ -55,16 +49,22 @@ export default function AkunPage() {
   };
 
   return (
-    <>
-      <div className="bg-white shadow px-8 py-4">
-        <h1 className="text-lg font-semibold text-gray-700">
+    <div className="min-h-screen bg-[#212121] text-[#FFB8DB]">
+      
+      {/* HEADER */}
+      <div className="bg-[#2a2a2a] shadow px-8 py-4 border-b border-[#424242]">
+        <h1 className="text-lg font-semibold text-white">
           Pengaturan Akun Admin
         </h1>
       </div>
-
+  
+      {/* CONTENT */}
       <div className="p-8 max-w-xl">
-        <div className="bg-white p-6 rounded-xl shadow-md">
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="bg-[#2a2a2a] p-6 rounded-xl shadow-md border border-[#424242]">
+          
+          <form onSubmit={handleSubmit} className="space-y-5">
+  
+            {/* USERNAME */}
             <input
               type="text"
               placeholder="Username baru (opsional)"
@@ -72,9 +72,12 @@ export default function AkunPage() {
               onChange={(e) =>
                 setForm({ ...form, usernameBaru: e.target.value })
               }
-              className="w-full border p-2 rounded-lg"
+              className="w-full px-4 py-3 rounded-xl bg-[#212121] border border-[#424242]
+              text-white placeholder:text-gray-400
+              focus:outline-none focus:ring-2 focus:ring-[#FF0080]/40"
             />
-
+  
+            {/* PASSWORD LAMA */}
             <input
               type="password"
               placeholder="Password lama"
@@ -82,10 +85,13 @@ export default function AkunPage() {
               onChange={(e) =>
                 setForm({ ...form, passwordLama: e.target.value })
               }
-              className="w-full border p-2 rounded-lg"
+              className="w-full px-4 py-3 rounded-xl bg-[#212121] border border-[#424242]
+              text-white placeholder:text-gray-400
+              focus:outline-none focus:ring-2 focus:ring-[#FF0080]/40"
               required
             />
-
+  
+            {/* PASSWORD BARU */}
             <input
               type="password"
               placeholder="Password baru"
@@ -93,10 +99,13 @@ export default function AkunPage() {
               onChange={(e) =>
                 setForm({ ...form, passwordBaru: e.target.value })
               }
-              className="w-full border p-2 rounded-lg"
+              className="w-full px-4 py-3 rounded-xl bg-[#212121] border border-[#424242]
+              text-white placeholder:text-gray-400
+              focus:outline-none focus:ring-2 focus:ring-[#FF0080]/40"
               required
             />
-
+  
+            {/* KONFIRMASI */}
             <input
               type="password"
               placeholder="Konfirmasi password baru"
@@ -104,16 +113,22 @@ export default function AkunPage() {
               onChange={(e) =>
                 setForm({ ...form, konfirmasi: e.target.value })
               }
-              className="w-full border p-2 rounded-lg"
+              className="w-full px-4 py-3 rounded-xl bg-[#212121] border border-[#424242]
+              text-white placeholder:text-gray-400
+              focus:outline-none focus:ring-2 focus:ring-[#FF0080]/40"
               required
             />
-
-            <button className="bg-[#3D5C8A] text-white px-6 py-2 rounded-lg w-full">
+  
+            {/* BUTTON */}
+            <button
+              className="w-full bg-[#FF0080] text-white py-3 rounded-xl
+              font-semibold hover:bg-pink-600 transition"
+            >
               Simpan Perubahan
             </button>
           </form>
         </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -2,6 +2,9 @@ import { Metadata } from "next";
 import axios from "axios";
 import DetailClient from "./DetailClient";
 
+const BASE_URL = "http://localhost:5000";
+const SITE_NAME = "BAGgedebug";
+
 /* ================= SEO METADATA (SERVER) ================= */
 export async function generateMetadata(
   { params }: { params: Promise<{ id: string }> }
@@ -10,31 +13,44 @@ export async function generateMetadata(
 
   try {
     const res = await axios.get(
-      `http://localhost:5000/api/produk/${id}`
+      `${BASE_URL}/api/produk/${id}`
     );
 
     const produk = res.data.data || res.data.produk || res.data;
 
+    const nama = produk?.nama_produk || "Produk";
+    const deskripsi = produk?.deskripsi || `Detail produk di ${SITE_NAME}`;
+    const gambar = produk?.gambar || "default.jpg";
+
     return {
-      title: `${produk.nama_produk} | Craftopia Handmade`,
-      description: produk.deskripsi,
+      title: `${nama} | ${SITE_NAME}`,
+      description: deskripsi,
+
       openGraph: {
-        title: produk.nama_produk,
-        description: produk.deskripsi,
+        title: nama,
+        description: deskripsi,
+        siteName: SITE_NAME,
         images: [
           {
-            url: `/${produk.gambar}`,
+            url: `${BASE_URL}/uploads/${gambar}`,
             width: 800,
             height: 600,
-            alt: produk.nama_produk,
+            alt: nama,
           },
         ],
       },
+
+      keywords: [
+        "tas stylis",
+        "tas lokal",
+        "BAGgedebug",
+        "produk tas",
+      ],
     };
   } catch {
     return {
-      title: "Produk Craftopia",
-      description: "Detail produk Craftopia",
+      title: `Produk | ${SITE_NAME}`,
+      description: `Detail produk di ${SITE_NAME}`,
     };
   }
 }

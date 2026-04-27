@@ -29,32 +29,33 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#3D5C8A] text-white font-sans">
+    <div className="min-h-screen flex flex-col bg-[#212121] text-white font-sans">
 
       {/* ================= HERO SECTION ================= */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-[#0b1e3d] to-[#1c3f72] text-white pt-36 pb-40">
+      <section className="relative overflow-hidden bg-[#212121] text-white pt-36 pb-52">
 
         {/* ORNAMEN */}
-        <div className="absolute -top-24 -left-24 w-80 h-80 bg-teal-400/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-24 -right-24 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />
-
+        <div className="absolute -top-24 -left-24 w-80 h-80 bg-[#FF0080]/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-24 -right-24 w-96 h-96 bg-[#FFB8DB]/10 rounded-full blur-3xl" />
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between px-6 md:px-24 lg:px-32 gap-16">
 
           {/* TEXT */}
-          <div className="max-w-xl md:w-1/2 text-center md:text-left">
+          <div className="max-w-xl md:w-1/2 text-center md:text-left animate-fade-in">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-              Hadiah Spesial dari <br /> Hati untuk yang Kamu Sayang 💖
+              Tas Stylish untuk <br />
+              <span className="text-[#FF0080]">Gaya Modernmu</span>
             </h2>
-            <p className="text-lg text-gray-200 mb-8">
-              Setiap produk{" "}
-              <span className="font-semibold text-teal-300">Craftopia</span>{" "}
-              dibuat dengan cinta dan kreativitas.
+
+            <p className="text-lg text-gray-300 mb-8">
+              Koleksi tas premium dari{" "}
+              <span className="font-semibold text-[#FFB8DB]">BAGgedebug</span>{" "}
+              dibuat untuk tampil beda dan penuh percaya diri.
             </p>
 
             {/* ⬇️ PINDAH KE HALAMAN /produk */}
             <button
               onClick={() => router.push("/produk")}
-              className="bg-[#8ca9ff] hover:bg-[#6d8efc] transition px-8 py-3 rounded-xl font-semibold shadow-lg"
+              className="bg-[#FF0080] hover:bg-pink-600 transition px-8 py-3 rounded-xl font-semibold shadow-lg"
             >
               Lihat Produk
             </button>
@@ -62,32 +63,50 @@ export default function Home() {
 
           {/* IMAGE */}
           <div className="md:w-1/2 flex justify-center">
-            <div className="rounded-3xl overflow-hidden border border-white/20 shadow-2xl">
+            <div className="rounded-3xl overflow-hidden border border-[#424242] shadow-2xl">
               <img
-                src="/lavender.jpg"
-                alt="Bunga Lavender"
-                className="w-[360px] md:w-[520px] object-cover"
+                src="/iklan.jpeg"
+                className="w-[360px] md:w-[520px] object-cover hover:scale-105 transition duration-300"
               />
             </div>
           </div>
         </div>
 
         {/* WAVE */}
+        <div className="absolute bottom-0 left-0 w-full">
+
+        {/* WAVE 1 (MAGENTA - BACKGROUND) */}
         <svg
-          className="absolute bottom-0 left-0 w-full"
-          viewBox="0 0 1440 120"
-          preserveAspectRatio="none"
+          className="w-full absolute bottom-0"
+          viewBox="0 0 1440 260"
         >
           <path
-            fill="#ffffff"
-            d="M0,64L80,74.7C160,85,320,107,480,96C640,85,800,43,960,32C1120,21,1280,43,1360,53.3L1440,64V120H0Z"
+            fill="#FF0080"
+            fillOpacity="0.35"
+            d="M0,140L80,150C160,160,320,180,480,170C640,160,800,120,960,110C1120,100,1280,120,1360,130L1440,140V260H0Z"
           />
         </svg>
+
+          {/* WAVE 2 (DARK - DEPAN) */}
+          <svg
+            className="w-full absolute bottom-0"
+            viewBox="0 0 1440 200"
+          >
+            <path
+              fill="#2a2a2a"
+              d="M0,180L80,190C160,200,320,220,480,210C640,200,800,170,960,150C1120,130,1280,150,1360,160L1440,180V260H0Z"
+            />
+          </svg>
+
+{/* GRADIENT FADE PALING ATAS */}
+<div className="absolute bottom-0 w-full h-40 bg-gradient-to-b from-transparent to-[#212121]" />
+
+</div>
       </section>
 
       {/* ================= PRODUK UNGGULAN ================= */}
-      <section className="px-10 py-20 bg-white text-gray-900 flex-1">
-        <h3 className="text-3xl font-bold mb-10 text-center text-[#0b1e3d]">
+      <section className="px-10 py-20 bg-[#212121] text-white flex-1">
+        <h3 className="text-3xl font-bold mb-10 text-center text-[#FF0080]">
           Produk Unggulan
         </h3>
 
@@ -98,31 +117,31 @@ export default function Home() {
             {produk.slice(0, 3).map((item) => (
               <div
                 key={item.id}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl border border-gray-200 overflow-hidden transition transform hover:-translate-y-1"
+                className="bg-[#2a2a2a] rounded-2xl shadow-lg hover:shadow-2xl border border-[#424242] overflow-hidden transition transform hover:-translate-y-1"
               >
                 <img
                   src={`/${item.gambar}`}
                   alt={item.nama_produk}
-                  className="w-full h-64 object-cover"
+                  className="w-full h-64 object-cover hover:scale-105 transition duration-300"
                 />
 
                 <div className="p-5">
-                  <h4 className="font-semibold text-xl text-gray-800">
+                  <h4 className="font-semibold text-xl text-white-800">
                     {item.nama_produk}
                   </h4>
 
                   {/* RUPIAH */}
-                  <p className="text-[#1c3f72] font-bold text-lg mt-1 mb-3">
+                  <p className="text-[#FF0080] font-bold text-lg mt-1 mb-3">
                     {rupiah(Number(item.harga))}
                   </p>
 
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                  <p className="text-gray-400 text-sm mb-4 line-clamp-2">
                     {item.deskripsi}
                   </p>
 
                   <button
                     onClick={() => router.push(`/produk/${item.id}`)}
-                    className="inline-block bg-teal-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-teal-600 transition"
+                    className="inline-block bg-[#FF0080] text-white px-4 py-2 rounded-lg font-semibold hover:bg-pink-600 transition"
                   >
                     Detail Produk
                   </button>
@@ -133,8 +152,74 @@ export default function Home() {
         )}
       </section>
 
+{/* ================= PROMO TERBATAS ================= */}
+<section className="px-10 mt-20 mb-10">
+  <h3 className="text-3xl font-bold text-center text-[#FF0080] mb-12">
+    Promo Terbatas
+  </h3>
+
+  <div className="flex flex-col gap-8 max-w-5xl mx-auto">
+
+  {produk.slice(3, 6).map((item, i) => {
+  const harga = Number(item.harga);
+  const hargaDiskon = Math.floor(harga * 0.9); // diskon 10%
+
+  return (
+    <div
+      key={item.id}
+      style={{ animationDelay: `${i * 0.2}s` }}
+      className="relative flex flex-col md:flex-row items-center gap-6 p-5 rounded-2xl 
+      bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg hover:shadow-2xl 
+      transition animate-fade-in"
+    >
+
+      {/* BADGE DISKON */}
+      <span className="absolute top-3 right-3 bg-[#FF0080] text-xs px-3 py-1 rounded-full font-semibold">
+        -10%
+      </span>
+
+      {/* IMAGE */}
+      <img
+        src={`/${item.gambar}`}
+        alt={item.nama_produk}
+        className="w-32 h-32 md:w-40 md:h-40 object-cover rounded-xl"
+      />
+
+      {/* CONTENT */}
+      <div className="flex-1 text-center md:text-left">
+        <h4 className="text-lg md:text-xl font-semibold text-white mb-2">
+          {item.nama_produk}
+        </h4>
+
+        <div className="mb-3">
+          {/* HARGA ASLI */}
+          <p className="text-sm line-through text-gray-400">
+            {rupiah(harga)}
+          </p>
+
+          {/* HARGA DISKON */}
+          <p className="text-[#FF0080] font-bold text-lg">
+            {rupiah(hargaDiskon)}
+          </p>
+        </div>
+
+        <button
+          onClick={() => router.push(`/produk/${item.id}`)}
+          className="bg-[#FF0080] hover:bg-pink-600 px-6 py-2 rounded-full font-semibold shadow-lg hover:scale-105 transition"
+        >
+          Beli sekarang
+        </button>
+      </div>
+
+    </div>
+  );
+})}
+
+  </div>
+</section>
+
       {/* ================= SLIDER PROMO ================= */}
-      <section className="bg-[#f0f4ff] py-16 px-6 md:px-20 text-center">
+      <section className="bg-[#1e1e1e] py-16 px-6 md:px-20 text-center">
         <Swiper
           modules={[Pagination, Autoplay]}
           spaceBetween={30}
@@ -144,16 +229,19 @@ export default function Home() {
           className="rounded-2xl shadow-lg max-w-5xl mx-auto overflow-hidden"
         >
           <SwiperSlide>
-            <img src="/promo1.jpg" className="w-full aspect-[3/1] object-cover" />
+            <img src="/promo1.jpeg" className="w-full aspect-[3/1] object-cover" />
           </SwiperSlide>
           <SwiperSlide>
-            <img src="/promo2.jpg" className="w-full aspect-[3/1] object-cover" />
+            <img src="/promo2.jpeg" className="w-full aspect-[3/1] object-cover" />
           </SwiperSlide>
           <SwiperSlide>
-            <img src="/promo3.jpg" className="w-full aspect-[3/1] object-cover" />
+            <img src="/promo3.jpeg" className="w-full aspect-[3/1] object-cover" />
           </SwiperSlide>
         </Swiper>
       </section>
+      
+      <div className="w-full h-32 bg-gradient-to-b from-[#FF0080]/20 to-[#212121]" />
+      
     </div>
   );
 }

@@ -39,8 +39,8 @@ export default function Header() {
   const navClass = (href: string) =>
     `transition ${
       pathname === href
-        ? "text-white"
-        : "text-white hover:text-teal-300"
+        ? "text-[#FF0080]"
+        : "text-[#FFB8DB] hover:text-[#FF0080]"
     }`;
 
   return (
@@ -51,18 +51,19 @@ export default function Header() {
         flex items-center justify-between
         text-white
         transition-all duration-300
-        ${scrolled ? "bg-[#3D5C8A]/80 backdrop-blur" : "bg-[#3D5C8A]"}
+        ${scrolled ? "bg-[#212121]/90 backdrop-blur" : "bg-[#212121]"}
       `}
     >
       {/* LOGO */}
       <div className="flex items-center gap-3 group">
         <img
-          src="/BAGgedebug logo.png"
+          src="/bagbug.png"
           alt="BAGgedebug logo"
           className="w-10 h-10 rounded-full border border-white/40 transition group-hover:scale-105"
         />
-        <h1 className="text-xl md:text-2xl font-extrabold tracking-wide">
-          CRAFTOPIA
+        <h1 className="text-xl md:text-2xl font-extrabold tracking-wide flex">
+          <span className="text-[#FFFFFF]">BAGge</span>
+          <span className="text-[#FF0080]">debug</span>
         </h1>
       </div>
 
@@ -77,7 +78,7 @@ export default function Header() {
         <Link href="/keranjang" className="relative">
           <FaCartShopping
             size={20}
-            className="cursor-pointer hover:text-teal-300 transition"
+            className="cursor-pointer hover:text-[#FF0080] transition"
           />
           {cartCount > 0 && (
             <span className="
@@ -95,10 +96,11 @@ export default function Header() {
           href="/admin/login"
           className="
             ml-2 flex items-center gap-2
-            border border-white/40
+            border border-[#424242]
             px-4 py-1.5 rounded-md
             text-sm
-            hover:bg-white hover:text-[#3D5C8A]
+            text-[#FFB8DB]
+            hover:bg-[#FF0080] hover:text-white
             transition
           "
         >
@@ -108,50 +110,94 @@ export default function Header() {
       </nav>
 
       {/* MOBILE ACTION */}
-      <div className="flex items-center gap-4 md:hidden">
-        <Link href="/keranjang" className="relative">
-          <FaCartShopping size={20} />
-          {cartCount > 0 && (
-            <span className="
-              absolute -top-2 -right-3
-              bg-red-500 text-white
-              text-xs font-bold
-              px-2 py-0.5 rounded-full
-            ">
-              {cartCount}
-            </span>
-          )}
+          <div className="flex items-center gap-4 md:hidden">
+      {/* CART */}
+      <Link href="/keranjang" className="relative text-white">
+        <FaCartShopping size={20} />
+
+        {cartCount > 0 && (
+          <span className="
+            absolute -top-2 -right-3
+            bg-[#FF0080] text-white
+            text-xs font-bold
+            px-2 py-0.5 rounded-full shadow-md
+          ">
+            {cartCount}
+          </span>
+        )}
+      </Link>
+
+      {/* MENU BUTTON */}
+      <button
+        onClick={() => setOpenMenu(!openMenu)}
+        className="text-white hover:text-[#FF0080] transition"
+      >
+        {openMenu ? <FaTimes size={22} /> : <FaBars size={22} />}
+      </button>
+    </div>
+
+    {/* MOBILE MENU */}
+    {openMenu && (
+      <div className="
+        absolute top-[72px] left-0 w-full
+        bg-[#212121]/95 backdrop-blur-md
+        flex flex-col gap-4
+        px-6 py-6
+        text-base font-semibold
+        md:hidden
+        border-t border-[#424242]
+        animate-in slide-in-from-top-2 duration-200
+      ">
+
+        {/* MENU LINKS */}
+        <Link
+          href="/"
+          onClick={() => setOpenMenu(false)}
+          className="text-white hover:text-[#FF0080] transition"
+        >
+          Home
         </Link>
 
-        <button onClick={() => setOpenMenu(!openMenu)}>
-          {openMenu ? <FaTimes size={22} /> : <FaBars size={22} />}
-        </button>
+        <Link
+          href="/produk"
+          onClick={() => setOpenMenu(false)}
+          className="text-white hover:text-[#FF0080] transition"
+        >
+          Produk
+        </Link>
+
+        <Link
+          href="/tentang"
+          onClick={() => setOpenMenu(false)}
+          className="text-white hover:text-[#FF0080] transition"
+        >
+          Tentang
+        </Link>
+
+        <Link
+          href="/kontak"
+          onClick={() => setOpenMenu(false)}
+          className="text-white hover:text-[#FF0080] transition"
+        >
+          Kontak
+        </Link>
+
+        {/* LOGIN BUTTON */}
+        <Link
+          href="/admin/login"
+          className="
+            mt-3 w-fit flex items-center gap-2
+            border border-[#FF0080]
+            text-[#FF0080]
+            px-4 py-2 rounded-lg
+            hover:bg-[#FF0080] hover:text-white
+            transition
+          "
+        >
+          <FaUser size={14} />
+          Login
+        </Link>
       </div>
-
-      {/* MOBILE MENU */}
-      {openMenu && (
-        <div className="
-          absolute top-[72px] left-0 w-full
-          bg-[#3D5C8A]/95 backdrop-blur
-          flex flex-col gap-4
-          px-6 py-6
-          text-base font-semibold
-          md:hidden
-          animate-in slide-in-from-top-2 duration-200
-        ">
-          <Link href="/" onClick={() => setOpenMenu(false)}>Home</Link>
-          <Link href="/produk" onClick={() => setOpenMenu(false)}>Produk</Link>
-          <Link href="/tentang" onClick={() => setOpenMenu(false)}>Tentang</Link>
-          <Link href="/kontak" onClick={() => setOpenMenu(false)}>Kontak</Link>
-
-          <Link
-            href="/admin/login"
-            className="mt-2 w-fit flex items-center gap-2 border border-white/40 px-4 py-2 rounded-md"
-          >
-            <FaUser size={14} />
-            Login
-          </Link>
-        </div>
       )}
     </header>
   );

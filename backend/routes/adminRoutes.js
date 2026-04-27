@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
+const jwt = require("jsonwebtoken");
 
-/* ================= LOGIN ================= */
+/* ================= LOGIN & LOGOUT ================= */
 router.post("/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -14,11 +15,37 @@ router.post("/login", (req, res) => {
       return res.status(401).json({ message: "Username atau password salah" });
     }
 
+    const admin = result[0];
+
+    //BUAT TOKEN
+    const token = jwt.sign(
+      { id: admin.id, username: admin.username },
+      "SECRET_KEY_KAMU",
+      { expiresIn: "1h" }
+    );
+
+    // SIMPAN TOKEN DI COOKIE
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      path: "/",
+    });
+
     res.json({
       message: "Login berhasil",
-      adminId: result[0].id, 
+      adminId: admin.id,
     });
   });
+});
+
+router.post("/logout", (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+  });
+
+  res.json({ message: "Logout berhasil" });
 });
 
 /* ================= UPDATE AKUN ================= */

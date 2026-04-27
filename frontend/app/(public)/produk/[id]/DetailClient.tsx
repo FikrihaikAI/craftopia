@@ -6,24 +6,35 @@ import axios from "axios";
 import { addToCart } from "@/lib/cart";
 import { rupiah } from "@/lib/format";
 
+const BASE_URL = "http://localhost:5000";
+
 export default function DetailProduk({ id }: { id: string }) {
   const router = useRouter();
 
   const [produk, setProduk] = useState<any>(null);
+  const [allProduk, setAllProduk] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [added, setAdded] = useState(false);
 
   useEffect(() => {
     if (!id) return;
 
-    axios
-      .get(`http://localhost:5000/api/produk/${id}`)
-      .then((res) => {
-        const data = res.data.data || res.data.produk || res.data;
-        setProduk(data);
+    Promise.all([
+      axios.get(`${BASE_URL}/api/produk`),
+      axios.get(`${BASE_URL}/api/produk/${id}`),
+    ])
+      .then(([allRes, detailRes]) => {
+        const allData = allRes.data.data || allRes.data;
+        const detailData =
+          detailRes.data.data ||
+          detailRes.data.produk ||
+          detailRes.data;
+
+        setAllProduk(allData);
+        setProduk(detailData);
       })
       .catch((err) => {
-        console.error("Gagal ambil detail produk:", err);
+        console.error("Gagal ambil data:", err);
       })
       .finally(() => setLoading(false));
   }, [id]);
@@ -31,15 +42,15 @@ export default function DetailProduk({ id }: { id: string }) {
   /* ================= LOADING ================= */
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 pt-32 flex justify-center">
+      <div className="min-h-screen bg-[#212121] pt-32 flex justify-center">
         <div className="animate-pulse flex flex-col md:flex-row gap-10">
-          <div className="w-80 h-96 bg-gray-200 rounded-2xl" />
+          <div className="w-80 h-96 bg-[#2a2a2a] rounded-2xl" />
           <div className="space-y-4 w-80">
-            <div className="h-6 bg-gray-200 rounded" />
-            <div className="h-8 bg-gray-200 rounded w-2/3" />
-            <div className="h-4 bg-gray-200 rounded" />
-            <div className="h-4 bg-gray-200 rounded w-1/2" />
-            <div className="h-12 bg-gray-200 rounded" />
+            <div className="h-6 bg-[#2a2a2a] rounded" />
+            <div className="h-8 bg-[#2a2a2a] rounded w-2/3" />
+            <div className="h-4 bg-[#2a2a2a] rounded" />
+            <div className="h-4 bg-[#2a2a2a] rounded w-1/2" />
+            <div className="h-12 bg-[#2a2a2a] rounded" />
           </div>
         </div>
       </div>
@@ -48,93 +59,120 @@ export default function DetailProduk({ id }: { id: string }) {
 
   if (!produk) {
     return (
-      <div className="pt-40 text-center text-gray-500">
+      <div className="pt-40 text-center text-gray-400 bg-[#212121] min-h-screen">
         Produk tidak ditemukan
       </div>
     );
   }
 
-  return (
-    <div className="bg-gray-50 min-h-screen text-gray-900">
+  /* ================= DISKON ================= */
+  const produkDiskonIds = allProduk.slice(3, 6).map((p) => p.id);
 
-      {/* ================= JALUR NAV ================= */}
-      <div className="pt-24 px-6 md:px-20 text-sm text-gray-500">
+  const hargaAsli = Number(produk.harga);
+  const isDiskon = produkDiskonIds.includes(produk.id);
+  const hargaFinal = isDiskon
+    ? Math.floor(hargaAsli * 0.9)
+    : hargaAsli;
+
+  return (
+    <div className="bg-[#212121] min-h-screen text-white">
+
+      {/* ================= NAV ================= */}
+      <div className="pt-24 px-6 md:px-20 text-sm text-gray-400">
         <button
           onClick={() => router.push("/produk")}
-          className="hover:text-teal-600"
+          className="hover:text-[#FF0080]"
         >
           Produk
         </button>{" "}
-        / <span className="text-gray-800">{produk.nama_produk}</span>
+        / <span className="text-white">{produk.nama_produk}</span>
       </div>
 
       {/* ================= CARD ================= */}
       <div className="flex justify-center px-6 md:px-20 py-14">
-        <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 flex flex-col md:flex-row gap-14 max-w-5xl w-full">
+        <div className="bg-[#2a2a2a] rounded-3xl border border-[#3a3a3a] p-8 md:p-12 flex flex-col md:flex-row gap-14 max-w-5xl w-full">
 
-          {/* IMAGE */}
+          {/* ================= IMAGE ================= */}
           <div className="flex justify-center">
             <img
-              src={`/${produk.gambar}`}
+              src={`${BASE_URL}/uploads/${produk.gambar}`}
               alt={produk.nama_produk}
-              className="w-80 md:w-96 rounded-2xl border shadow-md hover:scale-105 transition"
+              onError={(e: any) => {
+                e.target.src = "/no-image.png"; // fallback kalau gambar error
+              }}
+              className="w-80 md:w-96 rounded-2xl border border-[#3a3a3a] hover:scale-105 transition"
             />
           </div>
 
-          {/* INFO */}
+          {/* ================= INFO ================= */}
           <div className="flex-1">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
               {produk.nama_produk}
             </h1>
 
-            <p className="text-2xl font-extrabold text-[#1c3f72] mb-4">
-              {rupiah(produk.harga)}
-            </p>
+            {/* HARGA */}
+            <div className="mb-4">
+              {isDiskon ? (
+                <>
+                  <p className="text-sm line-through text-gray-400">
+                    {rupiah(hargaAsli)}
+                  </p>
+                  <p className="text-2xl font-extrabold text-[#FF0080]">
+                    {rupiah(hargaFinal)}
+                  </p>
+                </>
+              ) : (
+                <p className="text-2xl font-extrabold text-[#FF0080]">
+                  {rupiah(hargaAsli)}
+                </p>
+              )}
+            </div>
 
             {/* STOK */}
             <span
               className={`inline-block px-4 py-1 rounded-full text-sm font-semibold mb-6
-                ${
-                  produk.stok > 0
-                    ? "bg-green-100 text-green-700"
-                    : "bg-red-100 text-red-600"
-                }`}
+              ${
+                produk.stok > 0
+                  ? "bg-[#FF0080]/20 text-[#FFB8DB]"
+                  : "bg-red-500/20 text-red-400"
+              }`}
             >
               {produk.stok > 0
                 ? `Stok ${produk.stok} tersedia`
                 : "Stok habis"}
             </span>
 
-            <p className="text-gray-700 leading-relaxed mb-8">
+            <p className="text-gray-300 leading-relaxed mb-8">
               {produk.deskripsi}
             </p>
 
-            {/* BUTTONS */}
+            {/* BUTTON */}
             <div className="flex flex-col sm:flex-row gap-4">
+
               {/* BELI */}
               <a
-                href={`https://wa.me/6282155178576?text=Halo%20Craftopia!%20Saya%20ingin%20memesan%20produk%20${encodeURIComponent(
+                href={`https://wa.me/6288705217614?text=Halo%20BAGgedebug!%20Saya%20ingin%20memesan%20produk%20${encodeURIComponent(
                   produk.nama_produk
                 )}.`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`px-8 py-4 rounded-xl text-white font-semibold text-center transition
-                  ${
-                    produk.stok > 0
-                      ? "bg-teal-500 hover:bg-teal-600"
-                      : "bg-gray-400 cursor-not-allowed"
-                  }`}
+                ${
+                  produk.stok > 0
+                    ? "bg-[#FF0080] hover:bg-pink-600"
+                    : "bg-gray-500 cursor-not-allowed"
+                }`}
               >
                 Beli Sekarang
               </a>
 
-              {/* KERANJANG */}
+              {/* CART */}
               <button
                 onClick={() => {
                   addToCart({
                     id: produk.id,
                     nama_produk: produk.nama_produk,
-                    harga: produk.harga,
+                    harga: hargaFinal,
                     gambar: produk.gambar,
                     stok: produk.stok,
                   });
@@ -143,15 +181,12 @@ export default function DetailProduk({ id }: { id: string }) {
                   setTimeout(() => setAdded(false), 2000);
                 }}
                 disabled={produk.stok <= 0}
-                className={`
-                  px-8 py-4 rounded-xl border font-semibold
-                  transition
-                  ${
-                    produk.stok > 0
-                      ? "hover:bg-gray-100 hover:border-gray-400 active:scale-95 cursor-pointer"
-                      : "opacity-50 cursor-not-allowed"
-                  }
-                `}
+                className={`px-8 py-4 rounded-xl border border-[#555] font-semibold transition
+                ${
+                  produk.stok > 0
+                    ? "hover:bg-[#3a3a3a] active:scale-95"
+                    : "opacity-50 cursor-not-allowed"
+                }`}
               >
                 + Keranjang
               </button>
@@ -159,8 +194,8 @@ export default function DetailProduk({ id }: { id: string }) {
 
             {/* NOTIF */}
             {added && (
-              <p className="mt-4 text-sm font-semibold text-green-600">
-                ✔ Produk berhasil ditambahkan ke keranjang
+              <p className="mt-4 text-sm font-semibold text-[#FFB8DB]">
+                Produk berhasil ditambahkan ke keranjang
               </p>
             )}
           </div>

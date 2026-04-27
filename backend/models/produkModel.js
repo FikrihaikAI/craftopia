@@ -40,16 +40,28 @@ exports.checkDuplicateProduk = (nama_produk, gambar, callback) => {
 
 // ================= UPDATE PRODUK =================
 exports.updateProduk = (id, data, callback) => {
-  const query = `
+  let query = `
     UPDATE produk
-    SET nama_produk=?, harga=?, stok=?, deskripsi=?, gambar=?
-    WHERE id=?
+    SET nama_produk=?, harga=?, stok=?, deskripsi=?
   `;
-  db.query(
-    query,
-    [data.nama_produk, data.harga, data.stok, data.deskripsi, data.gambar, id],
-    callback
-  );
+
+  let values = [
+    data.nama_produk,
+    data.harga,
+    data.stok,
+    data.deskripsi,
+  ];
+
+  // kalau ada gambar baru
+  if (data.gambar) {
+    query += `, gambar=?`;
+    values.push(data.gambar);
+  }
+
+  query += ` WHERE id=?`;
+  values.push(id);
+
+  db.query(query, values, callback);
 };
 
 // ================= DELETE PRODUK =================

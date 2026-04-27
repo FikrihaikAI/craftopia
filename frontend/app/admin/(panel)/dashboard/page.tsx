@@ -12,18 +12,10 @@ export default function DashboardPage() {
     nama_produk: "",
     harga: "",
     deskripsi: "",
-    gambar: "",
+    gambar: null as File | null,
     stok: "",
   });
   const [editId, setEditId] = useState<number | null>(null);
-
-  //  Cek login admin
-  useEffect(() => {
-    const loggedIn = localStorage.getItem("isAdminLoggedIn");
-    if (!loggedIn) {
-      router.push("/admin/login");
-    }
-  }, [router]);
 
   //  Ambil data produk
   useEffect(() => {
@@ -39,55 +31,60 @@ export default function DashboardPage() {
     }
   };
 
-  // ➕ TAMBAH /  EDIT PRODUK (FIX)
+  //  TAMBAH /  EDIT PRODUK
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     try {
+      const formData = new FormData();
+  
+      formData.append("nama_produk", form.nama_produk);
+      formData.append("harga", form.harga);
+      formData.append("deskripsi", form.deskripsi);
+      formData.append("stok", form.stok);
+  
+      if (form.gambar) {
+        formData.append("gambar", form.gambar);
+      }
+  
       if (editId) {
-        // UPDATE
         await axios.put(
           `http://localhost:5000/api/produk/${editId}`,
+          formData,
           {
-            ...form,
-            harga: Number(form.harga),
-            stok: Number(form.stok),
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
           }
         );
         alert("Produk berhasil diperbarui");
       } else {
-        // TAMBAH
         await axios.post(
           "http://localhost:5000/api/produk",
+          formData,
           {
-            ...form,
-            harga: Number(form.harga),
-            stok: Number(form.stok),
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
           }
         );
         alert("Produk berhasil ditambahkan");
       }
-
-      // RESET FORM
+  
+      // reset
       setForm({
         nama_produk: "",
         harga: "",
         deskripsi: "",
-        gambar: "",
+        gambar: null,
         stok: "",
       });
       setEditId(null);
-
-      // REFRESH TABLE
+  
       fetchProduk();
-
-      window.scrollTo({ top: 400, behavior: "smooth" });
     } catch (error: any) {
-      if (error.response) {
-        alert(error.response.data.message || "Terjadi kesalahan");
-      } else {
-        alert("Server tidak dapat dihubungi");
-      }
+      console.error(error);
+      alert("Terjadi kesalahan");
     }
   };
 
@@ -97,7 +94,7 @@ export default function DashboardPage() {
       nama_produk: item.nama_produk,
       harga: item.harga,
       deskripsi: item.deskripsi,
-      gambar: item.gambar,
+      gambar: null,
       stok: item.stok,
     });
     setEditId(item.id);
@@ -117,34 +114,34 @@ export default function DashboardPage() {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-[#212121] text-white">
+  
       {/* NAVBAR */}
-      <div className="bg-white shadow px-8 py-4 flex justify-between items-center">
-        <h1 className="text-lg font-semibold text-gray-700">
-          Dashboard Admin
-        </h1>
+      <div className="bg-[#2a2a2a] border-b border-[#424242] px-8 py-4 flex justify-between items-center">
+        <h1 className="text-lg font-semibold">Dashboard Admin</h1>
       </div>
-
+  
       {/* CONTENT */}
-      <div className="p-8 bg-gray-50 min-h-screen">
+      <div className="p-8">
+  
         {/* HEADER */}
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-gray-800">
-            Selamat Datang, Admin
+          <h2 className="text-2xl font-semibold">
+            Selamat Datang, Admin 👋
           </h2>
-          <p className="text-gray-500">
-            Kelola produk Craftopia melalui dashboard ini
+          <p className="text-gray-400">
+            Kelola produk BAGgedebug melalui dashboard ini
           </p>
         </div>
-
+  
         {/* FORM */}
-        <div className="bg-white p-6 rounded-xl shadow-md mb-10">
-          <h3 className="text-lg font-semibold mb-1">
+        <div className="bg-[#2a2a2a] p-6 rounded-xl border border-[#424242] shadow-md mb-10">
+          <h3 className="text-lg font-semibold mb-2">
             {editId ? "Edit Produk" : "Tambah Produk"}
           </h3>
-
+  
           {editId && (
-            <div className="mb-4 flex items-center justify-between bg-yellow-100 text-yellow-700 p-3 rounded-lg">
+            <div className="mb-4 flex items-center justify-between bg-yellow-500/20 text-yellow-300 p-3 rounded-lg">
               <span>Mode Edit Aktif</span>
               <button
                 onClick={() => {
@@ -153,7 +150,7 @@ export default function DashboardPage() {
                     nama_produk: "",
                     harga: "",
                     deskripsi: "",
-                    gambar: "",
+                    gambar:null as File | null,
                     stok: "",
                   });
                 }}
@@ -163,7 +160,7 @@ export default function DashboardPage() {
               </button>
             </div>
           )}
-
+  
           <form
             onSubmit={handleSubmit}
             className="grid grid-cols-1 md:grid-cols-2 gap-4"
@@ -175,10 +172,11 @@ export default function DashboardPage() {
               onChange={(e) =>
                 setForm({ ...form, nama_produk: e.target.value })
               }
-              className="border p-2 rounded-lg"
+              className="bg-[#212121] border border-[#424242] p-3 rounded-xl
+              focus:outline-none focus:ring-2 focus:ring-[#FF0080]/40"
               required
             />
-
+  
             <input
               type="number"
               placeholder="Harga"
@@ -186,20 +184,23 @@ export default function DashboardPage() {
               onChange={(e) =>
                 setForm({ ...form, harga: e.target.value })
               }
-              className="border p-2 rounded-lg"
+              className="bg-[#212121] border border-[#424242] p-3 rounded-xl
+              focus:outline-none focus:ring-2 focus:ring-[#FF0080]/40"
               required
             />
-
+  
             <input
-              type="text"
-              placeholder="URL Gambar"
-              value={form.gambar}
-              onChange={(e) =>
-                setForm({ ...form, gambar: e.target.value })
-              }
-              className="border p-2 rounded-lg"
-            />
-
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              console.log(file);
+              setForm({ ...form, gambar: file });
+            }}
+            className="bg-[#212121] border border-[#424242] p-3 rounded-xl
+            focus:outline-none focus:ring-2 focus:ring-[#FF0080]/40"
+          />
+  
             <input
               type="number"
               placeholder="Stok"
@@ -207,81 +208,88 @@ export default function DashboardPage() {
               onChange={(e) =>
                 setForm({ ...form, stok: e.target.value })
               }
-              className="border p-2 rounded-lg"
+              className="bg-[#212121] border border-[#424242] p-3 rounded-xl
+              focus:outline-none focus:ring-2 focus:ring-[#FF0080]/40"
             />
-
+  
             <textarea
               placeholder="Deskripsi Produk"
               value={form.deskripsi}
               onChange={(e) =>
                 setForm({ ...form, deskripsi: e.target.value })
               }
-              className="border p-2 rounded-lg md:col-span-2"
+              className="bg-[#212121] border border-[#424242] p-3 rounded-xl md:col-span-2
+              focus:outline-none focus:ring-2 focus:ring-[#FF0080]/40"
               required
             />
-
+  
             <button
               type="submit"
-              className={`text-white py-2 rounded-lg md:col-span-2 transition ${
+              className={`md:col-span-2 py-3 rounded-xl font-semibold transition ${
                 editId
                   ? "bg-yellow-500 hover:bg-yellow-600"
-                  : "bg-[#3D5C8A] hover:bg-[#2c4973]"
+                  : "bg-[#FF0080] hover:bg-pink-600"
               }`}
             >
               {editId ? "Simpan Perubahan" : "Tambah Produk"}
             </button>
           </form>
         </div>
-
+  
         {/* TABLE */}
-        <div className="bg-white p-6 rounded-xl shadow-md">
+        <div className="bg-[#2a2a2a] p-6 rounded-xl border border-[#424242] shadow-md">
           <h3 className="text-lg font-semibold mb-4">Daftar Produk</h3>
-
-          <table className="w-full border text-sm">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="p-3">#</th>
-                <th className="p-3 text-left">Nama</th>
-                <th className="p-3">Harga</th>
-                <th className="p-3">Stok</th>
-                <th className="p-3">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {produk.map((item, index) => (
-                <tr key={item.id} className="border-b">
-                  <td className="p-3 text-center">{index + 1}</td>
-                  <td className="p-3">{item.nama_produk}</td>
-                  <td className="p-3 text-center">
-                    Rp {Number(item.harga).toLocaleString("id-ID")}
-                  </td>
-                  <td className="p-3 text-center">{item.stok}</td>
-                  <td className="p-3 text-center space-x-2">
-                    <button
-                      onClick={() => handleEdit(item)}
-                      className="bg-yellow-400 text-white px-3 py-1 rounded"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded"
-                    >
-                      Hapus
-                    </button>
-                  </td>
+  
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-[#212121] text-gray-300">
+                  <th className="p-3">#</th>
+                  <th className="p-3 text-left">Nama</th>
+                  <th className="p-3">Harga</th>
+                  <th className="p-3">Stok</th>
+                  <th className="p-3">Aksi</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-
+              </thead>
+              <tbody>
+                {produk.map((item, index) => (
+                  <tr
+                    key={item.id}
+                    className="border-b border-[#424242] hover:bg-[#333]"
+                  >
+                    <td className="p-3 text-center">{index + 1}</td>
+                    <td className="p-3">{item.nama_produk}</td>
+                    <td className="p-3 text-center">
+                      Rp {Number(item.harga).toLocaleString("id-ID")}
+                    </td>
+                    <td className="p-3 text-center">{item.stok}</td>
+                    <td className="p-3 text-center space-x-2">
+                      <button
+                        onClick={() => handleEdit(item)}
+                        className="bg-yellow-500 px-3 py-1 rounded hover:bg-yellow-600"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="bg-red-500 px-3 py-1 rounded hover:bg-red-600"
+                      >
+                        Hapus
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+  
           {produk.length === 0 && (
-            <p className="text-center text-gray-500 mt-4">
+            <p className="text-center text-gray-400 mt-4">
               Belum ada produk
             </p>
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }

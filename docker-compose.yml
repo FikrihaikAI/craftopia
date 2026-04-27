@@ -1,13 +1,13 @@
 services:
   mysql:
     image: mysql:8.0
-    container_name: craftopia-mysql
+    container_name: baggeddebug-mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: craftopia_db
-      MYSQL_USER: craftopia
-      MYSQL_PASSWORD: craftopia123
+      MYSQL_DATABASE: baggedebug_db
+      MYSQL_USER: baggedebug
+      MYSQL_PASSWORD: baggedebug123
     ports:
       - "3306:3306"
     volumes:
@@ -15,20 +15,20 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: craftopia-phpmyadmin
+    container_name: baggedebug-phpmyadmin
     restart: always
     ports:
       - "8080:80"
     environment:
       PMA_HOST: mysql
-      PMA_USER: craftopia
-      PMA_PASSWORD: craftopia123
+      PMA_USER: baggedebug
+      PMA_PASSWORD: baggedebug123
     depends_on:
       - mysql
 
   backend:
     build: ./backend
-    container_name: craftopia-backend
+    container_name: baggeddebug-backend
     ports:
       - "5000:5000"
     depends_on:
@@ -38,7 +38,7 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: craftopia-frontend
+    container_name: baggedebug-frontend
     ports:
       - "3000:3000"
     depends_on:

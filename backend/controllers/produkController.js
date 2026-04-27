@@ -32,10 +32,9 @@ exports.getProdukById = (req, res) => {
 
 // ================= ADD PRODUK =================
 exports.addProduk = (req, res) => {
-  const data = req.body;
+  const { nama_produk, harga, deskripsi, stok } = req.body;
 
-  const nama_produk = data.nama_produk?.trim().toLowerCase();
-  const gambar = data.gambar?.trim();
+  const gambar = req.file ? req.file.filename : null;
 
   if (!nama_produk || !gambar) {
     return res.status(400).json({
@@ -43,7 +42,7 @@ exports.addProduk = (req, res) => {
     });
   }
 
-  produkModel.checkDuplicateProduk(nama_produk, gambar, (err, result) => {
+  produkModel.checkDuplicateProduk(nama_produk.trim().toLowerCase(), gambar, (err, result) => {
     if (err) return res.status(500).json({ error: err });
 
     if (result.length > 0) {
@@ -54,12 +53,15 @@ exports.addProduk = (req, res) => {
 
     produkModel.addProduk(
       {
-        ...data,
-        nama_produk: data.nama_produk.trim(),
-        gambar: data.gambar.trim()
+        nama_produk: nama_produk.trim(),
+        harga,
+        deskripsi,
+        gambar,
+        stok
       },
       (err, results) => {
         if (err) {
+          console.error(err);
           return res.status(500).json({ error: err });
         }
 
@@ -76,8 +78,24 @@ exports.addProduk = (req, res) => {
 exports.updateProduk = (req, res) => {
   const id = req.params.id;
 
-  produkModel.updateProduk(id, req.body, (err) => {
+  const { nama_produk, harga, deskripsi, stok } = req.body;
+  const gambar = req.file ? req.file.filename : null;
+
+  const data = {
+    nama_produk,
+    harga,
+    deskripsi,
+    stok,
+  };
+
+  // kalau ada upload gambar baru
+  if (gambar) {
+    data.gambar = gambar;
+  }
+
+  produkModel.updateProduk(id, data, (err) => {
     if (err) {
+      console.error(err);
       return res.status(500).json({ message: "Gagal update produk" });
     }
     res.json({ message: "Produk berhasil diupdate" });

@@ -1,8 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc; /* abu muda */
-  --foreground: #0b1e3d; /* navy Craftopia */
+  --background: #212121;
+  --foreground: #ffffff;
+
+  --primary: #FF0080;   /* magenta */
+  --secondary: #FFB8DB; /* soft pink */
+  --surface: #2a2a2a;   /* card */
 }
 
 body {
@@ -27,4 +31,20 @@ body {
 
 .animate-scaleIn {
   animation: scaleIn 0.2s ease-out;
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out;
 }
