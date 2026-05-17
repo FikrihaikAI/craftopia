@@ -35,6 +35,8 @@ services:
       - mysql
     env_file:
       - ./backend/.env
+    volumes:
+      - ./backend/uploads:/app/uploads 
 
   frontend:
     build: ./frontend

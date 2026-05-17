@@ -1,10 +1,12 @@
 const produkModel = require("../models/produkModel");
+const crypto = require("crypto");
+const fs = require("fs");
 
 // ================= GET SEMUA PRODUK =================
 exports.getAllProduk = (req, res) => {
   produkModel.getAllProduk((err, result) => {
     if (err) {
-      console.error(' ERROR GET PRODUK:', err);
+      console.error("ERROR GET PRODUK:", err);
       return res.status(500).json({ message: "Server error" });
     }
     res.json(result);
@@ -29,35 +31,44 @@ exports.getProdukById = (req, res) => {
   });
 };
 
-
 // ================= ADD PRODUK =================
 exports.addProduk = (req, res) => {
   const { nama_produk, harga, deskripsi, stok } = req.body;
 
-  const gambar = req.file ? req.file.filename : null;
-
-  if (!nama_produk || !gambar) {
+  if (!req.file) {
     return res.status(400).json({
-      message: "Nama produk dan foto wajib diisi"
+      message: "Gambar wajib diupload",
     });
   }
 
-  produkModel.checkDuplicateProduk(nama_produk.trim().toLowerCase(), gambar, (err, result) => {
+  const gambar = req.file.filename;
+
+  // HASH GAMBAR
+  const fileBuffer = fs.readFileSync(req.file.path);
+  const hash = crypto.createHash("md5").update(fileBuffer).digest("hex");
+
+  // CEK DUPLIKAT BERDASARKAN HASH
+  produkModel.checkDuplicateHash(hash, (err, result) => {
     if (err) return res.status(500).json({ error: err });
 
     if (result.length > 0) {
+      // hapus file kalau duplicate
+      fs.unlinkSync(req.file.path);
+
       return res.status(409).json({
-        message: "Produk dengan nama atau foto yang sama sudah ada"
+        message: "Gambar sudah pernah digunakan",
       });
     }
 
+    // lanjut simpan ke database
     produkModel.addProduk(
       {
         nama_produk: nama_produk.trim(),
         harga,
         deskripsi,
         gambar,
-        stok
+        stok,
+        hash_gambar: hash,
       },
       (err, results) => {
         if (err) {
@@ -67,7 +78,7 @@ exports.addProduk = (req, res) => {
 
         res.status(201).json({
           message: "Produk berhasil ditambahkan",
-          id: results.insertId
+          id: results.insertId,
         });
       }
     );
@@ -88,7 +99,6 @@ exports.updateProduk = (req, res) => {
     stok,
   };
 
-  // kalau ada upload gambar baru
   if (gambar) {
     data.gambar = gambar;
   }

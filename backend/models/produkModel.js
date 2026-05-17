@@ -17,25 +17,32 @@ exports.getProdukById = (id, callback) => {
 // ================= ADD PRODUK =================
 exports.addProduk = (data, callback) => {
   const query = `
-    INSERT INTO produk (nama_produk, harga, stok, deskripsi, gambar)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO produk (nama_produk, harga, stok, deskripsi, gambar, hash_gambar)
+    VALUES (?, ?, ?, ?, ?, ?)
   `;
+
   db.query(
     query,
-    [data.nama_produk, data.harga, data.stok, data.deskripsi, data.gambar],
+    [
+      data.nama_produk,
+      data.harga,
+      data.stok,
+      data.deskripsi,
+      data.gambar,
+      data.hash_gambar
+    ],
     callback
   );
 };
 
-// ================= CEK DUPLIKAT =================
-exports.checkDuplicateProduk = (nama_produk, gambar, callback) => {
+// ================= CEK DUPLIKAT BERDASARKAN HASH =================
+exports.checkDuplicateHash = (hash, callback) => {
   const sql = `
     SELECT id FROM produk
-    WHERE TRIM(LOWER(nama_produk)) = ?
-       OR TRIM(gambar) = ?
+    WHERE hash_gambar = ?
     LIMIT 1
   `;
-  db.query(sql, [nama_produk, gambar], callback);
+  db.query(sql, [hash], callback);
 };
 
 // ================= UPDATE PRODUK =================

@@ -149,22 +149,30 @@ export default function DetailProduk({ id }: { id: string }) {
             {/* BUTTON */}
             <div className="flex flex-col sm:flex-row gap-4">
 
-              {/* BELI */}
-              <a
-                href={`https://wa.me/6288705217614?text=Halo%20BAGgedebug!%20Saya%20ingin%20memesan%20produk%20${encodeURIComponent(
-                  produk.nama_produk
-                )}.`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`px-8 py-4 rounded-xl text-white font-semibold text-center transition
-                ${
-                  produk.stok > 0
-                    ? "bg-[#FF0080] hover:bg-pink-600"
-                    : "bg-gray-500 cursor-not-allowed"
-                }`}
-              >
-                Beli Sekarang
-              </a>
+            {/* BELI */}
+            <a
+            href={`https://wa.me/6288705217614?text=${encodeURIComponent(
+            `🛍️ *Pesanan BAGgedebug*
+
+            Produk: ${produk.nama_produk}
+            Harga: ${rupiah(hargaFinal)}
+            Jumlah: 1
+
+            Total: ${rupiah(hargaFinal)}
+
+            Mohon konfirmasi ketersediaan. Terima kasih 🙏`
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`px-8 py-4 rounded-xl text-white font-semibold text-center transition
+            ${
+              produk.stok > 0
+                ? "bg-[#FF0080] hover:bg-pink-600"
+                : "bg-gray-500 cursor-not-allowed"
+            }`}
+            >
+            Beli Sekarang
+            </a>
 
               {/* CART */}
               <button
